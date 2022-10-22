@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <title>Assignement 4</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+</head>
+<body class="bg-slate-100 h-full">
+<div class="flex min-h-full items-center justify-center py-12 px-4">
+    <div class="shadow-2xl bg-white py-5 px-10 w-[1200px] rounded-lg grid justify-items-center gap-5">
+        <div>
+            <h1 class="">Select the action you want</h1>
+        </div>
+        <div>
+            <input id="showUser" type="button" value="Show Users" onclick="showUsers()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+        </div>
+        <div id="jsonResponse1" class="grid justify-items-center"></div>
+        <div class="flex justify-center items-center gap-2 border-solid border-2 border-sky-500 p-5 rounded-lg">
+                <p>Email: </p>
+                <label for="emailUserShow"></label>
+                <input type="text" id="emailUserShow" name="email" class="shadow appearance-none border rounded w-[200px] py-2 mr-5 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                <input type="button" value="Show User by Email" onclick="showUserByEmail()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+        </div>
+        <div id="jsonResponse2" class="grid justify-items-center"></div>
+        <div>
+            <div class="flex justify-center items-center gap-2 border-solid border-2 border-sky-500 p-5 rounded-lg">
+                <p>Name: </p>
+                <label for="nameUserCreate"></label>
+                <input type="text" id="nameUserCreate" name="name" class="shadow appearance-none border rounded w-[80px] py-2 mr-5 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                <p>Email: </p>
+                <label for="emailUserCreate"></label>
+                <input type="text" id="emailUserCreate" name="email" class="shadow appearance-none border rounded w-[200px] py-2 mr-5 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                <input type="submit" onclick="createUser()" value="Create User" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                <h1 id="infoUserCreated" class="hidden">User created !</h1>
+            </div>
+        </div>
+        <div id="jsonResponse3" class="grid justify-items-center"></div>
+        <div>
+            <div id="formUpdate" class="flex justify-center items-center gap-2 border-solid border-2 border-sky-500 p-5 rounded-lg">
+                <p>Id: </p>
+                <label for="idUserUpdate"></label>
+                <input type="text" id="idUserUpdate" name="id" class="shadow appearance-none border rounded w-[50px] py-2 mr-5 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                <p>Name: </p>
+                <label for="nameUserUpdate"></label>
+                <input type="text" id="nameUserUpdate" name="name" class="shadow appearance-none border rounded w-[80px] py-2 mr-5 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                <p>Email: </p>
+                <label for="emailUserUpdate"></label>
+                <input type="text" id="emailUserUpdate" name="email" class="shadow appearance-none border rounded w-[200px] py-2 mr-5 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                <input type="button" onclick="updateUser()" value="Update User" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                <h1 id="infoUserUpdated" class="hidden">User updated !</h1>
+            </div>
+        </div>
+        <div id="jsonResponse4" class="grid justify-items-center"></div>
+        <div>
+            <div id="formDelete" class="flex justify-center items-center gap-2 border-solid border-2 border-sky-500 p-5 rounded-lg">
+                <p>Id: </p>
+                <label for="idUserDelete"></label>
+                <input type="text" id="idUserDelete" name="id" class="shadow appearance-none border rounded w-[50px] py-2 mr-5 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                <input type="button" onclick="deleteUser()" value="Delete User" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                <h1 id="infoUserDeleted" class="hidden">User deleted !</h1>
+            </div>
+        </div>
+        <div id="jsonResponse5" class="grid justify-items-center"></div>
+
+    </div>
+</div>
+<script>
+    function showUsers(){
+        $.ajax({
+            method:"GET",
+            url: "http://localhost:3000/showUser",
+            success: function(result){
+                let container = document.getElementById("jsonResponse1");
+                let child = container.lastElementChild;
+                while (child) {
+                    container.removeChild(child);
+                    child = container.lastElementChild;
+                }
+                for (let i = 0; i < result.length; i++){
+                    let div = document.createElement('div');
+                    div.classList.add('userRow');
+                    div.innerHTML= "User: "+result[i].name+" --- Email: "+result[i].email;
+                    container.appendChild(div);
+                }
+                console.log(result)
+            }
+        });
+    }
+    function showUserByEmail(){
+        let email = document.getElementById("emailUserShow").value.toString();
+        $.ajax({
+            method:"POST",
+            data: JSON.stringify({email: email }),
+            dataType: "json",
+            contentType: 'application/json',
+            url: "http://localhost:3000/showUserById",
+            success: function(result){
+                let container = document.getElementById("jsonResponse2");
+                let child = container.lastElementChild;
+                while (child) {
+                    container.removeChild(child);
+                    child = container.lastElementChild;
+                }
+                for (let i = 0; i < result.length; i++){
+                    let div = document.createElement('div');
+                    div.classList.add('userRow');
+                    div.innerHTML= "Id: "+result[i].id+" --- User: "+result[i].name+" --- Email: "+result[i].email;
+                    container.appendChild(div);
+                }
+                console.log(result)
+            }
+        });
+    }
+    function createUser(){
+        let name = document.getElementById("nameUserCreate").value.toString();
+        let email = document.getElementById("emailUserCreate").value.toString();
+
+        $.ajax({
+            method:"POST",
+            data: JSON.stringify({'name': name, 'email': email }),
+            dataType: "json",
+            contentType: 'application/json',
+            url: "http://localhost:3000/createUser",
+            success: function(result){
+                let container = document.getElementById("jsonResponse3");
+                let child = container.lastElementChild;
+                while (child) {
+                    container.removeChild(child);
+                    child = container.lastElementChild;
+                }
+                let div = document.createElement('div');
+                div.classList.add('userRow');
+                div.innerHTML= "Server response --> " +JSON.stringify(result);
+                container.appendChild(div);
+                console.log(result)
+            }
+        });
+
+        document.getElementById("infoUserCreated").classList = "block";
+        setTimeout(() => {document.getElementById("infoUserCreated").classList = "hidden"}, 3000);
+    }
+    function updateUser(){
+        let id = document.getElementById("idUserUpdate").value.toString();
+        const data = {
+            name: document.getElementById("nameUserUpdate").value.toString(),
+            email: document.getElementById("emailUserUpdate").value.toString(),
+            id: id
+        };
+        $.ajax({
+            method:"PUT",
+            data: JSON.stringify(data),
+            dataType: "json",
+            contentType: 'application/json',
+            url: "http://localhost:3000/updateUser",
+            success: function(result){
+                let container = document.getElementById("jsonResponse4");
+                let child = container.lastElementChild;
+                while (child) {
+                    container.removeChild(child);
+                    child = container.lastElementChild;
+                }
+                let div = document.createElement('div');
+                div.classList.add('userRow');
+                div.innerHTML= "Server response --> " +JSON.stringify(result);
+                container.appendChild(div);
+                console.log(result)
+                document.getElementById("infoUserUpdated").classList = "block";
+                setTimeout(() => {document.getElementById("infoUserUpdated").classList = "hidden"}, 3000);
+            }
+        });
+
+
+    }
+    function deleteUser(){
+        let id = document.getElementById("idUserDelete").value;
+        const data = {
+            id: id
+        };
+        $.ajax({
+            method:"DELETE",
+            data: JSON.stringify(data),
+            dataType: "json",
+            contentType: 'application/json',
+            url: "http://localhost:3000/deleteUser",
+            success: function(result){
+                let container = document.getElementById("jsonResponse5");
+                let child = container.lastElementChild;
+                while (child) {
+                    container.removeChild(child);
+                    child = container.lastElementChild;
+                }
+                let div = document.createElement('div');
+                div.classList.add('userRow');
+                div.innerHTML= "Server response --> " +JSON.stringify(result);
+                container.appendChild(div);
+                console.log(result)
+                document.getElementById("infoUserDeleted").classList = "block";
+                setTimeout(() => {document.getElementById("infoUserDeleted").classList = "hidden"}, 3000);
+            }
+        });
+    }
+</script>
+</body>
+</html>
